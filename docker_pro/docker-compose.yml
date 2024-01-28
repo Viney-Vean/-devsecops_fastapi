@@ -12,7 +12,7 @@ services:
       - ASGI_SERVER=uvicorn
       - UVICORN_CMD="uvicorn main:app --host 0.0.0.0 --port 80 --workers 4"
       - GUNICORN_CMD="gunicorn -k uvicorn.workers.UvicornWorker -w 4 main:app -b 0.0.0.0:80"
-#    restart: always
+    restart: always
 
   postgres:
     build:
@@ -20,8 +20,6 @@ services:
       dockerfile: docker_pro/postgres.Dockerfile
     container_name: postgres_container
     restart: always
-    ports:
-      - "5433:5432"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -34,7 +32,7 @@ services:
       context: ..
       dockerfile: docker_pro/pgAdmin.Dockerfile
     container_name: pgadmin_container
-#    restart: always
+    restart: always
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=admin
