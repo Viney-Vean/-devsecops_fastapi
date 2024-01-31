@@ -40,6 +40,16 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+
+  redis:
+    build:
+      context: ..
+      dockerfile: docker_pro/redis.Dockerfile
+    container_name: redis_container
+    restart: always
+    volumes:
+      - redis_data:/data
+
   nginx:
     build:
       context: ..
@@ -47,15 +57,18 @@ services:
     container_name: nginx_container
     ports:
       # Port FastAPI
-      - "8000:80"
+      - "8080:80"
       # Port Postgresql
       - "5454:5454"
       # Port pgAdmin
       - "5050:5050"
+      # Port Redis
+      - "6379:6379"
     restart: always
 
 volumes:
   postgres_data:
   pgadmin_data:
   nginx_data:
+  redis_data:
 
