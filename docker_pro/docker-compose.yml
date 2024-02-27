@@ -50,6 +50,46 @@ services:
     volumes:
       - redis_data:/data
 
+  rabbitmq:
+    build:
+      context: ..
+      dockerfile: docker_pro/rabbitmq.Dockerfile
+    container_name: rabbitmq_container
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  zookeeper:
+    build:
+      context: ..
+      dockerfile: docker_pro/zookeeper.Dockerfile
+    container_name: zookeeper_container
+    networks:
+      - kafka-net
+
+  kafka:
+    build:
+      context: ..
+      dockerfile: docker_pro/kafka.Dockerfile
+    container_name: kafka_container
+    #    expose:
+    #      - "9093"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_CREATE_TOPICS: "your_topic:1:1"
+    volumes:
+      - docker_sock:/var/run/docker.sock
+    networks:
+      - kafka-net
+
+
   nginx:
     build:
       context: ..
@@ -64,6 +104,10 @@ services:
       - "5050:5050"
       # Port Redis
       - "6379:6379"
+      # RabbitMQ default port
+      - "5672:5672"
+      # RabbitMQ management plugin web interface
+      - "15672:15672"
     restart: always
 
 volumes:
@@ -71,4 +115,9 @@ volumes:
   pgadmin_data:
   nginx_data:
   redis_data:
+  rabbitmq_data:
+  docker_sock:
 
+networks:
+  kafka-net:
+    driver: bridge

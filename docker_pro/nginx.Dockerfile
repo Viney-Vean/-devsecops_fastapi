@@ -14,6 +14,7 @@ COPY ../requirements/nginx/pgadmin.conf /etc/nginx/conf.d/pgadmin.conf
 # Copy NGINX configuration stream file to streamconf.d, this block is for stream configuration
 COPY ../requirements/nginx/postgres.conf /etc/nginx/stream_conf.d/postgres.conf
 COPY ../requirements/nginx/redis.conf /etc/nginx/stream_conf.d/redis.conf
+COPY ../requirements/nginx/rabbitmq.conf /etc/nginx/stream_conf.d/rabbitmq.conf
 
 # Start NGINX when the container starts
 CMD ["nginx", "-g", "daemon off;"]
