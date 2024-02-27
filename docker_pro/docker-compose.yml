@@ -89,7 +89,6 @@ services:
     networks:
       - kafka-net
 
-
   nginx:
     build:
       context: ..
@@ -108,6 +107,11 @@ services:
       - "5672:5672"
       # RabbitMQ management plugin web interface
       - "15672:15672"
+      # zookeeper
+      - "2181:2181"
+      # kafka
+      - "9092:9092"
+      - "9093:9093"
     restart: always
 
 volumes:
