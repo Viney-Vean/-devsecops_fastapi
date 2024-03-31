@@ -13,6 +13,8 @@ services:
       - UVICORN_CMD="uvicorn main:app --host 0.0.0.0 --port 80 --workers 4"
       - GUNICORN_CMD="gunicorn -k uvicorn.workers.UvicornWorker -w 4 main:app -b 0.0.0.0:80"
     restart: always
+    networks:
+      - localhost-network
 
   postgres:
     build:
@@ -26,6 +28,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - localhost-network
 
   pgadmin:
     build:
@@ -39,6 +43,8 @@ services:
       - PGADMIN_LISTEN_PORT=80
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - localhost-network
 
 
   redis:
@@ -102,7 +108,7 @@ services:
       # Port pgAdmin
       - "5050:5050"
       # Port Redis
-      - "6379:6379"
+      - "6399:6379"
       # RabbitMQ default port
       - "5672:5672"
       # RabbitMQ management plugin web interface
@@ -113,6 +119,8 @@ services:
       - "9092:9092"
       - "9093:9093"
     restart: always
+    networks:
+      - localhost-network
 
 volumes:
   postgres_data:
@@ -123,5 +131,7 @@ volumes:
   docker_sock:
 
 networks:
+  localhost-network:
+    driver: bridge
   kafka-net:
     driver: bridge
